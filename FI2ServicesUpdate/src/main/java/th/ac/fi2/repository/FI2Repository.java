@@ -12,12 +12,15 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
 import javax.persistence.Query;
+import javax.persistence.RollbackException;
 import javax.transaction.TransactionRolledbackException;
 
 import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.TransactionSystemException;
 import org.springframework.transaction.annotation.Transactional;
 
 import th.ac.fi2.constant.ServiceConstant;
@@ -561,7 +564,7 @@ public class FI2Repository {
 	
 	
 	/*update ship machine*/ 
-	public String updateShipMachine(String shipSerial) throws DataAccessException{
+	public String updateShipMachine(String shipSerial) throws DataAccessException {
 		String msgProcess;
 		try {
 			StringBuffer sb = new StringBuffer(

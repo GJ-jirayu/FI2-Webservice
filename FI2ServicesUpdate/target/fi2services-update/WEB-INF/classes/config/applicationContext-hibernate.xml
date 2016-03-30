@@ -82,9 +82,11 @@
 	<bean id="dataSourceOdoo"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="org.postgresql.Driver" />		
-		<property name="url" value="jdbc:postgresql://10.7.16.43:5432/db_fi2_staging_live" />
-		<property name="username" value="pg_staging" />
-		<property name="password" value="goh7yahR" />
+		<property name="url" value="jdbc:postgresql://10.7.16.43:5432/FI2" />
+		<property name="username" value="pg_odoo" />
+		<property name="password" value="ahsh4aeV" />
+		<!-- <property name="username" value="pg_staging" />
+		<property name="password" value="goh7yahR" /> -->
 		<!-- <property name="username" value="pg_webservice" />
 		<property name="password" value="vee6En4o" /> -->
 	</bean>
