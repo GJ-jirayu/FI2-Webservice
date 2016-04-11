@@ -665,7 +665,7 @@ public class FI2Repository {
 				shipOwnerhist.setPaging(null);
 				shipownerhist.add(shipOwnerhist);
 			}
-		} 
+		}  
 		return shipownerhist;
 	}
 }
