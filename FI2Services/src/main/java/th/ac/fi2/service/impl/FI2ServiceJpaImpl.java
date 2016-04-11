@@ -7,8 +7,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import th.ac.fi2.model.DOFWarRoomFishingToolM;
+import th.ac.fi2.model.FishingLicenseInfo;
+import th.ac.fi2.model.FishingVesselInfo;
 import th.ac.fi2.model.FishingVesselM;
 import th.ac.fi2.model.FishingVesselMD;
+import th.ac.fi2.model.ShipOwnerHist;
 import th.ac.fi2.repository.FI2Repository;
 import th.ac.fi2.service.FI2Service;
 
@@ -31,6 +34,21 @@ public class FI2ServiceJpaImpl implements FI2Service {
     @Override
     public List<FishingVesselMD> getDOFWarFishingVesselByShipSerial(String shipSerial) {
         return fi2Repository.getFishingVesselMDByShipSerial(shipSerial);
+    }
+    
+    @Override
+    public List<FishingLicenseInfo> getFishingLicenseInfoByShipCode(String ShipCode) {
+        return fi2Repository.getFishingLicenseInfoByShipCode(ShipCode);
+    }
+    
+    @Override
+    public List<FishingVesselInfo> getFishingVesselInfoByShipCode(String ShipCode) {
+        return fi2Repository.getFishingVesselInfoByShipCode(ShipCode);
+    }
+    
+    @Override
+    public List<ShipOwnerHist> getShipOwnerHistByShipCode(String ShipCode) {
+        return fi2Repository.getShipOwnerHistByShipCode(ShipCode);
     }
      
 }

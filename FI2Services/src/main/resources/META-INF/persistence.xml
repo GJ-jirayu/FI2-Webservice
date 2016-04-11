@@ -9,4 +9,8 @@
 		<!--  <class>co.th.imake.domain.Aoe</class>  -->
 	</persistence-unit>
 	
+	<persistence-unit name="HibernatePersistenceUnitOdoo" transaction-type="RESOURCE_LOCAL">
+		<property name="hibernate.connection.autocommit" value="true" />
+	</persistence-unit>
+	
 </persistence>

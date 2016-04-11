@@ -17,8 +17,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import th.ac.fi2.constant.ServiceConstant;
 import th.ac.fi2.model.DOFWarRoomFishingToolM;
+import th.ac.fi2.model.FishingLicenseInfo;
+import th.ac.fi2.model.FishingVesselInfo;
 import th.ac.fi2.model.FishingVesselM;
 import th.ac.fi2.model.FishingVesselMD;
+import th.ac.fi2.model.ShipOwnerHist;
 
 @Repository("fi2Repository")
 @Transactional(readOnly = false)
@@ -28,6 +31,9 @@ public class FI2Repository {
 	
 	@PersistenceContext(unitName = "HibernatePersistenceUnit", type=PersistenceContextType.TRANSACTION)
 	private EntityManager entityManager;
+	
+	@PersistenceContext(unitName = "HibernatePersistenceUnitOdoo", type=PersistenceContextType.TRANSACTION)
+	private EntityManager entiryManagerFI2;
 
 	//private Timestamp currentTimestamp = new java.sql.Timestamp(now.getTime());
 	//private Date currentQlDate = new java.sql.Date(utilDate.getTime());
@@ -505,4 +511,162 @@ public class FI2Repository {
 		}
 		return fishingVesselMDs;
 	}
+	
+	/* -----------------------------------------------------------------------------------------------------------------
+	 * Fishing Vessel From FI2 Server
+	 * @author Panicha Sriarj (GJ)
+	 * -----------------------------------------------------------------------------------------------------------------
+	 */
+//	@SuppressWarnings("unchecked")
+	public List<FishingLicenseInfo> getFishingLicenseInfoByShipCode(String Ship_Code) {
+
+		StringBuffer sb = new StringBuffer
+				("select shipcode, shipnameth, shipnameen, shipexpiredate, \n"
+				+ "tgross, shipownername, shipowneraddress, registeryear, \n"
+				+ "fishinglicensedateexpire, fishingtype, fishingtool, shippermit, grouptool, districtname, \n"
+				+ "provincename, vesselcouple, markingno, fishingarea, fishingperiod \n"
+				+ "from vw_fishing_info \n"
+				+ "where shipcode = '"+Ship_Code+"' \n");
+		Query query = entiryManagerFI2.createNativeQuery(sb.toString());
+		//query.setParameter("ship_code", Ship_Code);
+		List<Object[]> obj = query.getResultList();
+		int result_size = obj.size();
+		List<FishingLicenseInfo> fishinglicense = new ArrayList<FishingLicenseInfo>();
+		if (obj != null && result_size > 0) {
+			for (int i = 0; i < result_size; i++) {
+				Object[] results = obj.get(i);
+
+				String ShipCode = ((results[0] != null) ? ((String) results[0]) : (""));
+				String ShipNameTH = ((results[1] != null) ? ((String) results[1]) : (""));
+				String ShipNameEN = ((results[2] != null) ? ((String) results[2]) : (""));
+				String ShipExpireDate = ((results[3] != null) ? (((Date) results[3])).toString() : (""));
+				String Tgross = ((results[4] != null) ? (((Double) results[4])).toString() : (""));
+				String ShipOwnerName = ((results[5] != null) ? ((String) results[5]) : (""));
+				String ShipOwnerAddress = ((results[6] != null) ? ((String) results[6]) : (""));
+				String RegisterYear = ((results[7] != null) ? (((Integer) results[7])).toString() : (""));
+				//Date FishingLicenseDateReg = ((results[8] != null) ? ((Date) results[8]) : (null));
+				String FishingLicenseDateExpire = ((results[8] != null) ? (((Date) results[8])).toString() : (""));
+				String FishingType = ((results[9] != null) ? ((String) results[9]) : (""));
+				String FishingTool = ((results[10] != null) ? ((String) results[10]) : (""));
+				String ShipPermit = ((results[11] != null) ? ((String) results[11]) : (""));
+				String GroupTool = ((results[12] != null) ? ((String) results[12]) : (""));
+				String DistrictName = ((results[13] != null) ? ((String) results[13]) : (""));
+				String ProvinceName = ((results[14] != null) ? ((String) results[14]) : (""));
+				String VesselCouple = ((results[15] != null) ? ((String) results[15]) : (""));
+				String MarkingNo = ((results[16] != null) ? ((String) results[16]) : (""));
+				String FishingArea = ((results[17] != null) ? ((String) results[17]) : (""));
+				String FishingPeriod = ((results[18] != null) ? ((String) results[18]) : (""));
+				FishingLicenseInfo fishinglicenseInfo = new FishingLicenseInfo(
+						ShipCode, ShipNameTH, ShipNameEN, ShipExpireDate, Tgross, ShipOwnerName, 
+						ShipOwnerAddress, RegisterYear,FishingLicenseDateExpire,FishingType, FishingTool, ShipPermit, GroupTool, DistrictName, ProvinceName, 
+						VesselCouple, MarkingNo, FishingArea, FishingPeriod);
+				fishinglicenseInfo.setPaging(null);
+				fishinglicense.add(fishinglicenseInfo);
+			}
+		}
+		return fishinglicense;
+	}
+	
+	/* -----------------------------------------------------------------------------------------------------------------
+	 * Fishing Vessel From FI2 Server
+	 * @author Panicha Sriarj (GJ)
+	 * -----------------------------------------------------------------------------------------------------------------
+	 */
+//	@SuppressWarnings("unchecked")
+	public List<FishingVesselInfo> getFishingVesselInfoByShipCode(String Ship_Code) {
+
+		StringBuffer sb = new StringBuffer
+				("select b.ship_code AS shipcode,b.tha_name AS shipnameth,b.eng_name AS shipnameen,b.use_type AS usetype,b.use_bound_str AS mdtype, \n"
+				+ "c.name AS ownername,c.address AS owneraddress,b.cap_fullname AS captanname,b.egn_fullname AS engineername, \n"
+				+ "b.width,b.ship_length AS lenght,b.depth,b.tgross,b.tnet, b.date_permit AS datepermit,b.date_expire AS dateexpire,b.abort_flag AS abortflag, \n"
+				+ "b.loc_reg AS locationregister,v.box_id as VMXBoxID,v.brand as VMSBrand,v.Status as VMSStatus,v.Model as VMSModel \n"
+				+ "FROM fishing_vessel b \n"
+				+ "inner join owner_max a on a.ship_serial_id = b.id \n"
+				+ "inner  join   ship_owner c on a.id = c.id \n"
+				+ "left join fi2_vms v on v.id=b.vms_ID \n"
+				+ "where b.ship_code = :ship_code \n");
+		logger.info("\n getFishingVesselInfoByShipCode-> \n" + sb.toString());
+		Query query = entiryManagerFI2.createNativeQuery(sb.toString());
+		query.setParameter("ship_code", Ship_Code);
+		List<Object[]> obj = query.getResultList();
+		int result_size = obj.size();
+		List<FishingVesselInfo> fishingvessel = new ArrayList<FishingVesselInfo>();
+		if (obj != null && result_size > 0) {
+			for (int i = 0; i < result_size; i++) {
+				Object[] results = obj.get(i);
+
+				String ShipCode = ((results[0] != null) ? ((String) results[0]) : (""));
+				String ShipNameTH = ((results[1] != null) ? ((String) results[1]) : (""));
+				String ShipNameEN = ((results[2] != null) ? ((String) results[2]) : (""));
+				String UseType = ((results[3] != null) ? ((String) results[3]) : (""));
+				String MDType = ((results[4] != null) ? ((String) results[4]) : (""));
+				String ShipOwnerName = ((results[5] != null) ? ((String) results[5]) : (""));
+				String ShipOwnerAddress = ((results[6] != null) ? ((String) results[6]) : (""));
+				String CaptanName = ((results[7] != null) ? ((String) results[7]) : (""));
+				String EngineerName = ((results[8] != null) ? ((String) results[8]) : (""));
+				String Width = ((results[9] != null) ? (((Double) results[9])).toString() : (""));
+				String Lenght = ((results[10] != null) ? (((Double) results[10])).toString() : (""));
+				String Depth = ((results[11] != null) ? (((Double) results[11])).toString() : (""));
+				String Tgross = ((results[12] != null) ? (((Double) results[12])).toString() : (""));
+				String Tgnet = ((results[13] != null) ? (((Double) results[13])).toString() : (""));
+				String DatePermit = ((results[14] != null) ? (((Date) results[14])).toString() : (""));
+				String DateExpire = ((results[15] != null) ? (((Date) results[15])).toString() : (""));
+				String AbortFlag = ((results[16] != null) ? ((String) results[16]) : (""));
+				String LocationRegister = ((results[17] != null) ? ((String) results[17]) : (""));
+				String VMSBoxID = ((results[18] != null) ? ((String) results[18]) : (""));
+				String VMSBrand = ((results[19] != null) ? ((String) results[19]) : (""));
+				String VMSStatus = ((results[20] != null) ? ((String) results[20]) : (""));
+				String VMSModel = ((results[21] != null) ? ((String) results[21]) : (""));
+				FishingVesselInfo fishingVesselInfo = new FishingVesselInfo(
+						ShipCode, ShipNameTH, ShipNameEN, UseType, MDType, ShipOwnerName, ShipOwnerAddress,
+						CaptanName, EngineerName, Width, Lenght, Depth, Tgross, Tgnet, DatePermit, DateExpire,
+						AbortFlag, LocationRegister, VMSBoxID, VMSBrand, VMSStatus, VMSModel);
+				fishingVesselInfo.setPaging(null);
+				fishingvessel.add(fishingVesselInfo);
+			}
+		}
+		return fishingvessel;
+	}
+	/* -----------------------------------------------------------------------------------------------------------------
+	 * Fishing Vessel From FI2 Server
+	 * @author Panicha Sriarj (GJ)
+	 * -----------------------------------------------------------------------------------------------------------------
+	 */
+//	@SuppressWarnings("unchecked")
+	public List<ShipOwnerHist> getShipOwnerHistByShipCode(String Ship_Code) {
+
+		StringBuffer sb = new StringBuffer
+				("select f.ship_code, f.tha_name as ShipNameTH, f.eng_name  as ShipNameEN, s.seq as Seq, s.Name as OwnerNameTH, \n"
+				+ "s.ename as OwnerNameEN, s.Name as Address, s.date_transfer as DateTransfer, s.active as OwnerStatus \n"
+				+ "from ship_owner s \n"
+				+ "inner join Fishing_Vessel f on f.id=s.ship_serial_id \n"
+				+ "where s.active='t' \n"
+				+ "and f.ship_code = '"+Ship_Code+"' \n");
+		Query query = entiryManagerFI2.createNativeQuery(sb.toString());
+		//query.setParameter("ship_code", Ship_Code);
+		List<Object[]> obj = query.getResultList();
+		int result_size = obj.size();
+		List<ShipOwnerHist> shipownerhist = new ArrayList<ShipOwnerHist>();
+		if (obj != null && result_size > 0) {
+			for (int i = 0; i < result_size; i++) {
+				Object[] results = obj.get(i);
+
+				String ShipCode = ((results[0] != null) ? ((String) results[0]) : (""));
+				String ShipNameTH = ((results[1] != null) ? ((String) results[1]) : (""));
+				String ShipNameEN = ((results[2] != null) ? ((String) results[2]) : (""));
+				String Seq = ((results[3] != null) ? (((Integer) results[3])).toString() : (""));
+				String OwnerNameTH = ((results[4] != null) ? ((String) results[4]) : (""));
+				String OwnerNameEN = ((results[5] != null) ? ((String) results[5]) : (""));
+				String Address = ((results[6] != null) ? ((String) results[6]) : (""));
+				String DateTransfer = ((results[7] != null) ? ((String) results[7]) : (""));
+				
+				ShipOwnerHist shipOwnerhist = new ShipOwnerHist(
+						ShipCode, ShipNameTH, ShipNameEN, Seq, OwnerNameTH, OwnerNameEN, Address, DateTransfer);
+				shipOwnerhist.setPaging(null);
+				shipownerhist.add(shipOwnerhist);
+			}
+		}
+		return shipownerhist;
+	}
 }
+

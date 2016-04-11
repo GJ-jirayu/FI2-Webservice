@@ -2,6 +2,7 @@ package th.ac.fi2.rest.resource;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -13,9 +14,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import th.ac.fi2.constant.ServiceConstant;
 import th.ac.fi2.model.DOFWarRoomFishingToolM;
+import th.ac.fi2.model.FishingLicenseInfo;
+import th.ac.fi2.model.FishingVesselInfo;
 import th.ac.fi2.model.FishingVesselM;
 import th.ac.fi2.model.FishingVesselMD;
 import th.ac.fi2.model.FishingVesselUpdate;
+import th.ac.fi2.model.ShipOwnerHist;
 import th.ac.fi2.model.UpdateFishingVesselMsg;
 import th.ac.fi2.service.FI2Service;
 import th.ac.fi2.xstream.common.ImakeResultMessage;
@@ -132,7 +136,6 @@ public class FishingVesselResource extends BaseResource {
             imakeMessage.setResultListObj(dofWarRoomFishingToolList);
         }
         
-        
         /*Return Value Only*/ 
         else if(service_name.equals("DOFWarFishingVesselMD")){
         	logger.info("\n DOFWarFishingVesselM \n");
@@ -140,8 +143,36 @@ public class FishingVesselResource extends BaseResource {
             List<FishingVesselMD> dofWarRoomFishingToolList =
                     fi2Service.getDOFWarFishingVesselByShipSerial(ship_serial);
             imakeMessage.setResultListObj(dofWarRoomFishingToolList);
-        }else{
-        	imakeMessage.setResultListObj(null);
+        }
+        
+        else if(service_name.equals("wsGetFishingLicenseInfo")){
+        	logger.info("\n wsGetFishingLicenseInfo \n");
+            String ship_code=getQuery().getValues("ship_code");
+            logger.info("\n :ship_code \n");
+            List<FishingLicenseInfo> wsFishingLicenseInfoList =
+                    fi2Service.getFishingLicenseInfoByShipCode(ship_code);
+            imakeMessage.setResultListObj(wsFishingLicenseInfoList);
+        }
+        
+        else if(service_name.equals("wsGetFishingVesselInfo")){
+            String ship_code=getQuery().getValues("ship_code");
+            List<FishingVesselInfo> wsFishingVesselInfoList =
+                    fi2Service.getFishingVesselInfoByShipCode(ship_code);
+            imakeMessage.setResultListObj(wsFishingVesselInfoList);
+        }
+        
+        else if(service_name.equals("WsGetShipOwnerHist")){
+        	logger.info("\n WsGetShipOwnerHist \n");
+            String ship_code=getQuery().getValues("ship_code");
+            List<ShipOwnerHist> WsGetShipOwnerHistList =
+                    fi2Service.getShipOwnerHistByShipCode(ship_code);
+            imakeMessage.setResultListObj(WsGetShipOwnerHistList);
+        }
+        
+        else{
+        	List<String> msgElseLoop = new ArrayList<String>();
+        	msgElseLoop.add("Not Service");
+        	imakeMessage.setResultListObj(msgElseLoop);
         }
         
         return getRepresentation(null, imakeMessage, xstream);

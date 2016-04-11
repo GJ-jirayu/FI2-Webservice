@@ -58,5 +58,46 @@
 		<property name="username" value="mdwebservice"/>
 		<property name="password" value="mdwebservice"/>
 	</bean>
+	
+	
+	<!-- =================================== Connect to FI2 ========================================== -->
+	<bean id="entityManagerFactoryOdoo"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="persistenceXmlLocation" value="classpath:META-INF/persistence.xml" />
+		<property name="persistenceUnitName" value="HibernatePersistenceUnitOdoo" />
+		<property name="dataSource" ref="dataSourceOdoo" />
+		<property name="jpaVendorAdapter" ref="jpaVendorAdapterOdoo" />
+		<property name="jpaDialect" ref="jpaDialect" />
+		<property name="packagesToScan" value="th.ac.fi2.domain.*" />
+	</bean>
+	
+	<bean id="dataSourceOdoo"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="org.postgresql.Driver" />		
+		<property name="url" value="jdbc:postgresql://10.7.16.43:5432/FI2" />
+		<!-- <property name="username" value="pg_odoo" />
+		<property name="password" value="ahsh4aeV" /> -->
+		
+		<!-- <property name="username" value="pg_staging" />
+		<property name="password" value="raPh8oH1" /> -->
+		<property name="username" value="pg_webservice" />
+		<property name="password" value="ki2Hoode" />
+	</bean>
+
+	<bean id="jpaVendorAdapterOdoo"
+		class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+		<property name="database" value="POSTGRESQL" />
+		<property name="databasePlatform" value="org.hibernate.dialect.PostgreSQL94Dialect" />
+		<property name="showSql" value="true" />
+		<property name="generateDdl" value="true"/>
+	</bean>
+	
+	<bean id="transactionManagerOdoo" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactoryOdoo" />
+		<property name="dataSource" ref="dataSourceOdoo" />
+		<property name="jpaDialect" ref="jpaDialect" />
+	</bean>
+	
+	<tx:annotation-driven transaction-manager="transactionManagerOdoo" />
 
 </beans>
