@@ -42,15 +42,18 @@ public class FI2Repository {
 	public List<FishingVesselM> getFishingVesselByShipCode(String shipCode) {
 
 		StringBuffer sb = new StringBuffer("select tha_name as boatName, ship_code as boatRegNo, \n"
-				+ "concat(fishing_vessel.owner_name,' ',owner_surname) as ownerName,\n"
+				+ "concat(fishing_vessel.owner_name,' ',owner_surname) as ownerName, \n"
 				+ "ship_length1 as boatLong, width as boatWide, depth as deep, \n"
-				+ "ship_eng_type as boatTypeEngine, tgross as tonGross,\n"
-				+ "no_of_machine as noofMachine, date_permit, date_expire\n" + "from fishing_vessel\n"
-				+ "where ship_code =:ship_code");
+				+ "ship_eng_type as boatTypeEngine, tgross as tonGross, \n"
+				+ "no_of_machine as noofMachine, date_permit, date_expire \n" 
+				+ "from fishing_vessel \n"
+				+ "where ship_code = :ship_code ");
 
-		logger.info("getFishingVesselByShipCode->" + sb.toString());
-		Query query = entityManager.createNativeQuery(sb.toString());
+		Query query = entiryManagerFI2.createNativeQuery(sb.toString());
 		query.setParameter("ship_code", shipCode);
+		
+		logger.info("\n -- getFishingVesselByShipCode --> " + sb.toString() + "\n");
+		
 		List<Object[]> obj = query.getResultList();
 		int result_size = obj.size();
 		List<FishingVesselM> fishingVesselMs = new ArrayList<FishingVesselM>(result_size);
@@ -71,17 +74,7 @@ public class FI2Repository {
 				Date date_expire = ((results[10] != null) ? ((Date) results[10]) : null);
 				FishingVesselM fishingVesselM = new FishingVesselM(boatName, boatRegNo, ownerName, boatLong, boatWide,
 						deep, boatTypeEngine, tonGross, noofMachine, date_permit, date_expire);
-				logger.info("boatName[0]=" + ((results[0] != null) ? (results[0].getClass()) : ("null")));
-				logger.info("boatRegNo[1]=" + ((results[1] != null) ? (results[1].getClass()) : ("null")));
-				logger.info("ownerName[2]=" + ((results[2] != null) ? (results[2].getClass()) : ("null")));
-				logger.info("boatLong[3]=" + ((results[3] != null) ? (results[3].getClass()) : ("null")));
-				logger.info("boatWide[4]=" + ((results[4] != null) ? (results[4].getClass()) : ("null")));
-				logger.info("deep[5]=" + ((results[5] != null) ? (results[5].getClass()) : ("null")));
-				logger.info("boatTypeEngine[6]=" + ((results[6] != null) ? (results[6].getClass()) : ("null")));
-				logger.info("tonGross[7]=" + ((results[7] != null) ? (results[7].getClass()) : ("null")));
-				logger.info("noofMachine[8]=" + ((results[8] != null) ? (results[8].getClass()) : ("null")));
-				logger.info("permit_date[9]=" + ((results[9] != null) ? (results[9].getClass()) : ("null")));
-				logger.info("expire_date[10]=" + ((results[10] != null) ? (results[10].getClass()) : ("null")));
+				
 				fishingVesselM.setPaging(null);
 				fishingVesselMs.add(fishingVesselM);
 			}
@@ -100,7 +93,7 @@ public class FI2Repository {
 						+ "from fishery_license l left join fishing_vessel v\n" + "on l.ship_license = v.ship_code\n"
 						+ "where fishery_year =:fishery_year\n" + "and l.number_tool =:number_tool" + "");
 		logger.info("getFishingVesselByShipCode->" + sb.toString());
-		Query query = entityManager.createNativeQuery(sb.toString());
+		Query query = entiryManagerFI2.createNativeQuery(sb.toString());
 		query.setParameter("fishery_year", Integer.valueOf(fishery_year));
 		query.setParameter("number_tool", number_tool);
 		query.setMaxResults(10);
@@ -122,23 +115,11 @@ public class FI2Repository {
 				Double fishing_tool_qty = ((results[9] != null) ? ((Double) results[9]) : null);
 				String fishing_tool_uom = ((results[10] != null) ? ((String) results[10]) : null);
 				Timestamp write_date = ((results[11] != null) ? ((Timestamp) results[11]) : null);
-				logger.info("YearReg=" + yearReg);
-				logger.info("BoatRegNo=" + boatRegNo);
+
 				DOFWarRoomFishingToolM dofWarRoomFishingToolM = new DOFWarRoomFishingToolM(yearReg, boatPermit,
 						boatRegNo, fishingType, fishingTool, date_permit, date_expire, fishing_tool_width,
 						fishing_tool_length, fishing_tool_qty, fishing_tool_uom, write_date);
-				logger.info("YearReg[0]=" + ((results[0] != null) ? (results[0].getClass()) : ("null")));
-				logger.info("BoatPermit[1]=" + ((results[1] != null) ? (results[1].getClass()) : ("null")));
-				logger.info("BoatRegNo[2]=" + ((results[2] != null) ? (results[2].getClass()) : ("null")));
-				logger.info("FishingType[3]=" + ((results[3] != null) ? (results[3].getClass()) : ("null")));
-				logger.info("FishingTool[4]=" + ((results[4] != null) ? (results[4].getClass()) : ("null")));
-				logger.info("permit_date[5]=" + ((results[5] != null) ? (results[5].getClass()) : ("null")));
-				logger.info("expire_date[6]=" + ((results[6] != null) ? (results[6].getClass()) : ("null")));
-				logger.info("fishing_tool_width[7]=" + ((results[7] != null) ? (results[7].getClass()) : ("null")));
-				logger.info("fishing_tool_length[8]=" + ((results[8] != null) ? (results[8].getClass()) : ("null")));
-				logger.info("fishing_tool_qty[9]=" + ((results[9] != null) ? (results[9].getClass()) : ("null")));
-				logger.info("fishing_tool_uom[10]=" + ((results[10] != null) ? (results[10].getClass()) : ("null")));
-				logger.info("write_date[11]=" + ((results[11] != null) ? (results[11].getClass()) : ("null")));
+
 				dofWarRoomFishingToolM.setPaging(null);
 				dofWarRoomFishingToolList.add(dofWarRoomFishingToolM);
 			}

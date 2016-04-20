@@ -128,13 +128,15 @@ public class FishingVesselResource extends BaseResource {
             String ship_code=getQuery().getValues("ship_code");
             List<FishingVesselM> fishingVesselList =fi2Service.getFishingVesselByShipCode(ship_code);
             imakeMessage.setResultListObj(fishingVesselList);
-        }else if(service_name.equals("DOFWarRoomFishingTool")){
+        }
+        
+        else if(service_name.equals("DOFWarRoomFishingTool")){
             String fishery_year=getQuery().getValues("fishery_year");
             String number_tool=getQuery().getValues("number_tool");
             List<DOFWarRoomFishingToolM> dofWarRoomFishingToolList =
                     fi2Service.getDOFWarRoomFishingToolByFisheryYearAndShipLicense(fishery_year,number_tool);
             imakeMessage.setResultListObj(dofWarRoomFishingToolList);
-        }
+        }  
         
         /*Return Value Only*/ 
         else if(service_name.equals("DOFWarFishingVesselMD")){
