@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN" "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
+
+<beans>
+
+	<!-- User's central feed -->
+	<!-- 
+	<bean id="feed" class="com.sun.syndication.feed.atom.Feed"/>
+		 -->	
+	<!-- User's central dom4jdriver -->
+	<bean id="dom4jdriver" class="com.thoughtworks.xstream.io.xml.Dom4JDriver"/>
+	<bean id="jettisonMappedXmlDriverr" class="com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver"/>
+	<!-- User's central xstream -->
+	<bean id="xstream" class="com.thoughtworks.xstream.XStream">
+		 <constructor-arg index="0"><ref bean="dom4jdriver"/></constructor-arg>
+	</bean>
+	<bean id="jsonXstream" class="com.thoughtworks.xstream.XStream">
+		<constructor-arg index="0"><ref bean="jettisonMappedXmlDriverr"/></constructor-arg>
+	</bean>
+</beans>

@@ -51,13 +51,16 @@
 	</bean>
 	<tx:annotation-driven transaction-manager="transactionManager" />
 	
+	<!-- 
 	<bean id="dataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="oracle.jdbc.OracleDriver" />
 		<property name="url" value="jdbc:oracle:thin:@192.168.46.55:1521:md" />
 		<property name="username" value="mdwebservice"/>
-		<property name="password" value="mdwebservice"/>
+		<property name="password" value="Marine157"/>
 	</bean>
+	-->
+	<jee:jndi-lookup id="dataSource" resource-ref="true" jndi-name="jdbc/mdwebservice"/>
 	
 	
 	<!-- =================================== Connect to FI2 ========================================== -->
@@ -71,18 +74,16 @@
 		<property name="packagesToScan" value="th.ac.fi2.domain.*" />
 	</bean>
 	
+	<!--  
 	<bean id="dataSourceOdoo"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="org.postgresql.Driver" />		
 		<property name="url" value="jdbc:postgresql://10.7.16.43:5432/FI2" />
-		<!-- <property name="username" value="pg_odoo" />
-		<property name="password" value="ahsh4aeV" /> -->
-		
-		<!-- <property name="username" value="pg_staging" />
-		<property name="password" value="raPh8oH1" /> -->
 		<property name="username" value="pg_webservice" />
 		<property name="password" value="ki2Hoode" />
 	</bean>
+	-->
+	<jee:jndi-lookup id="dataSourceOdoo" resource-ref="true" jndi-name="jdbc/pgwebservice"/>
 
 	<bean id="jpaVendorAdapterOdoo"
 		class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
