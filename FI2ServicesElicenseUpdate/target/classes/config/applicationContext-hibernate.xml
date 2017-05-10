@@ -30,33 +30,21 @@
 	<bean id="entityManagerFactory"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="persistenceXmlLocation" value="classpath:META-INF/persistence.xml" />
-		<property name="persistenceUnitName" value="HibernatePersistenceUnit" />
+		<property name="persistenceUnitName" value="HibernatePersistenceUnitEL" />
 		<property name="dataSource" ref="dataSource" />
 		<property name="jpaVendorAdapter" ref="jpaVendorAdapter" />
 		<property name="jpaDialect" ref="jpaDialect" />
 		<property name="packagesToScan" value="th.ac.fi2.domain.*" />
 	</bean>
 	
-	<!--
-	<bean id="dataSource"
-		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="oracle.jdbc.OracleDriver" />
-		<property name="url" value="jdbc:oracle:thin:@192.168.46.55:1521:md" />
-		<property name="username" value="mdwebservice"/>
-		<property name="password" value="Marine157"/>
-	</bean>
-	-->
 	<jee:jndi-lookup id="dataSource" resource-ref="true" jndi-name="jdbc/mdwebservice"/>
 	
 	<bean id="jpaVendorAdapter"
 		class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">		
 		<property name="showSql" value="true" />
         <property name="generateDdl" value="true" />
-        <!-- <property name="database" value="ORACLE" />
-        <property name="databasePlatform" value="org.hibernate.dialect.OracleDialect" /> -->
-		<!-- <property name="database" value="POSTGRESQL" />
-		<property name="databasePlatform" value="org.hibernate.dialect.PostgreSQL94Dialect" />
-		<property name="showSql" value="false" /> -->
+        <property name="database" value="ORACLE" />
+        <property name="databasePlatform" value="org.hibernate.dialect.OracleDialect" />
 	</bean>
 	
 	<bean id="jpaDialect" class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
@@ -75,26 +63,13 @@
 	<bean id="entityManagerFactoryOdoo"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="persistenceXmlLocation" value="classpath:META-INF/persistence.xml" />
-		<property name="persistenceUnitName" value="HibernatePersistenceUnitOdoo" />
+		<property name="persistenceUnitName" value="HibernatePersistenceUnitOdooEL" />
 		<property name="dataSource" ref="dataSourceOdoo" />
 		<property name="jpaVendorAdapter" ref="jpaVendorAdapterOdoo" />
 		<property name="jpaDialect" ref="jpaDialect" />
 		<property name="packagesToScan" value="th.ac.fi2.domain.*" />
 	</bean>
 	
-	<!--
-	<bean id="dataSourceOdoo"
-		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="org.postgresql.Driver" />		
-		<property name="url" value="jdbc:postgresql://10.7.16.49:5432/db_elicense_live" />
-		<property name="username" value="pg_odoo" />
-		<property name="password" value="eeshauM5" />
-	</bean>
-	-->
-		<!-- <property name="username" value="pg_staging" />
-		<property name="password" value="raPh8oH1" /> -->
-		<!-- <property name="username" value="pg_webservice" />
-		<property name="password" value="vee6En4o" /> -->
 	<jee:jndi-lookup id="dataSourceOdoo" resource-ref="true" jndi-name="jdbc/pgwebserviceelicense"/>
 
 	<bean id="jpaVendorAdapterOdoo"
@@ -102,7 +77,7 @@
 		<property name="database" value="POSTGRESQL" />
 		<property name="databasePlatform" value="org.hibernate.dialect.PostgreSQL94Dialect" />
 		<property name="showSql" value="true" />
-		<property name="generateDdl" value="true"/>
+		<property name="generateDdl" value="true" />
 	</bean>
 	
 	<bean id="transactionManagerOdoo" class="org.springframework.orm.jpa.JpaTransactionManager">

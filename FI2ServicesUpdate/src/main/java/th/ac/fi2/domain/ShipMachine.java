@@ -14,15 +14,19 @@ import th.ac.fi2.domain.ShipMachinePKey;
 
 @Entity
 @Table(name="ship_machine")
-@IdClass(value=ShipMachinePKey.class)
+//@IdClass(value=ShipMachinePKey.class)
 public class ShipMachine implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
+	@Column(name="ID")
+	private Integer id;
+	
+	//@Id
 	@Column(name="SHIP_SERIAL_ID")
 	private Integer shipSerialId;
 	
-	@Id
+	//@Id
 	@Column(name="SEQ")
 	private Integer seq;
 	
@@ -79,6 +83,13 @@ public class ShipMachine implements Serializable {
     	
     }
 
+	public Integer getID() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 	
 	public Integer getShipSerialId() {
 		return shipSerialId;

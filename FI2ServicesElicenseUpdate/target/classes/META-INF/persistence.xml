@@ -2,15 +2,14 @@
 	
 <persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence" version="2.1">
 
-	<persistence-unit name="HibernatePersistenceUnit" transaction-type="RESOURCE_LOCAL">
-		<!--  <class>co.th.imake.domain.Aoe</class>  -->
+	<persistence-unit name="HibernatePersistenceUnitEL" transaction-type="RESOURCE_LOCAL">
+
 	</persistence-unit>
 	
-	<persistence-unit name="HibernatePersistenceUnitStaging" transaction-type="RESOURCE_LOCAL">
+	<!-- <persistence-unit name="HibernatePersistenceUnitStaging" transaction-type="RESOURCE_LOCAL">
+	</persistence-unit> -->
 	
-	</persistence-unit>
-	
-	<persistence-unit name="HibernatePersistenceUnitOdoo" transaction-type="RESOURCE_LOCAL">
+	<persistence-unit name="HibernatePersistenceUnitOdooEL" transaction-type="RESOURCE_LOCAL">
 		<property name="hibernate.connection.autocommit" value="true" />
 	</persistence-unit>
 </persistence>

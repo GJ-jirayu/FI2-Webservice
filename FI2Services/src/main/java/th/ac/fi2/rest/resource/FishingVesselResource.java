@@ -148,9 +148,8 @@ public class FishingVesselResource extends BaseResource {
         }
         
         else if(service_name.equals("wsGetFishingLicenseInfo")){
-        	logger.info("\n wsGetFishingLicenseInfo \n");
             String ship_code=getQuery().getValues("ship_code");
-            logger.info("\n :ship_code \n");
+            logger.info("\n wsGetFishingLicenseInfo --> "+ship_code+" \n");
             List<FishingLicenseInfo> wsFishingLicenseInfoList =
                     fi2Service.getFishingLicenseInfoByShipCode(ship_code);
             imakeMessage.setResultListObj(wsFishingLicenseInfoList);

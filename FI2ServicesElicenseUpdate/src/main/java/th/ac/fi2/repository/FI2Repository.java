@@ -9,10 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Parameter;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
 import javax.persistence.Query;
-import javax.transaction.TransactionRolledbackException;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,12 +31,13 @@ import th.ac.fi2.model.UpdateFishingVesselMsg;
 public class FI2Repository {
 	private static final Logger logger = Logger.getLogger(ServiceConstant.LOG_APPENDER);
 	@Autowired
-	@PersistenceContext(unitName = "HibernatePersistenceUnit")
+	@PersistenceContext(unitName = "HibernatePersistenceUnitEL")
 	private EntityManager entityManager;
 	
 	@Autowired
-	@PersistenceContext(unitName= "HibernatePersistenceUnitOdoo") //type=PersistenceContextType.EXTENDED
+	@PersistenceContext(unitName= "HibernatePersistenceUnitOdooEL") //type=PersistenceContextType.EXTENDED
 	private EntityManager entityManagerOdoo;
+	private EntityTransaction entityManagerOdooTrans = null;
 
 	private Date convertDateStrToDateSql(String dateStr) {
 		DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
@@ -594,9 +595,11 @@ public class FI2Repository {
 			ShipMachine shipMachine = new ShipMachine();
 			
 			List<Object[]> obj = query.getResultList();			
-			for (Object[] results : obj) {					
+			for (Object[] results : obj) {
 				String fishingVesselId = getIdFishingVessel(results[0].toString());
 				shipMachine.setShipSerialId(((results[0] != null) ? Integer.parseInt(fishingVesselId) : null));
+				
+				shipMachine.setId(checkExistMachineValueBySerialSeq(fishingVesselId, results[1].toString()));
 				shipMachine.setSeq(((results[1] != null) ? Integer.parseInt(results[1].toString()) : null));
 				shipMachine.setUserName(((results[2] != null) ? results[2].toString() : null));
 				shipMachine.setLastupdate(((results[3] != null) ? Date.valueOf( (String) results[3]) : null));
@@ -612,10 +615,15 @@ public class FI2Repository {
 				shipMachine.setMachineBrandStr(((results[13] != null) ? results[13].toString() : null));
 				shipMachine.setMachineBrandFkid(((results[14] != null) ? Integer.parseInt(results[14].toString()) : null));
 				shipMachine.setPower1(((results[15] != null) ? Double.parseDouble(results[15].toString()) : null));
-				shipMachine.setWriteDate(((results[16] != null) ? Timestamp.valueOf((String) results[16]) : null));
+				//shipMachine.setWriteDate(((results[16] != null) ? Timestamp.valueOf((String) results[16]) : null));
+				shipMachine.setWriteDate(new Timestamp(System.currentTimeMillis()));
 				shipMachine.setActive(Boolean.TRUE);
 				
+				//System.out.println("fishingVesselId --> "+shipMachine.getShipSerialId());
+				//System.out.println("seq --> "+shipMachine.getSeq());
+				//System.out.println("id --> "+shipMachine.getId());
 				entityManagerOdoo.merge(shipMachine);
+				
 			}
 			msgProcess = "SUCCESS";
 			
@@ -664,6 +672,27 @@ public class FI2Repository {
 		} catch (Exception e) {
 			logger.info(e.getMessage());
 			e.printStackTrace();
+			return 0;
+		}
+	}
+	
+	/*Check value existing in ship_machine*/
+	private Integer checkExistMachineValueBySerialSeq(String shipSerialId, String seq) throws DataAccessException {
+		try {
+			Query queryStr = entityManagerOdoo
+					.createNativeQuery("select max(id) from ship_machine where ship_serial_id = :shipSerialId and seq = :seq")
+					.setParameter("shipSerialId", Integer.parseInt(shipSerialId))
+					.setParameter("seq", Integer.parseInt(seq));
+			List<?> resulList = queryStr.getResultList();
+			
+			if(!resulList.isEmpty()){
+				return Integer.parseInt(queryStr.getSingleResult().toString());
+			}else{
+				return 0;
+			}
+		} catch (Exception e) {
+			//logger.info(e.getMessage());
+			//e.printStackTrace();
 			return 0;
 		}
 	}

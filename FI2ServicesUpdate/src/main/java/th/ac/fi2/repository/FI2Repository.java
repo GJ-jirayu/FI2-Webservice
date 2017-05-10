@@ -563,7 +563,7 @@ public class FI2Repository {
 	}
 	
 	
-	/*update ship machine*/ 
+	/*update ship machine*/
 	public String updateShipMachine(String shipSerial) throws DataAccessException {
 		String msgProcess;
 		try {
@@ -600,6 +600,8 @@ public class FI2Repository {
 			for (Object[] results : obj) {					
 				String fishingVesselId = getIdFishingVessel(results[0].toString());
 				shipMachine.setShipSerialId(((results[0] != null) ? Integer.parseInt(fishingVesselId) : null));
+				
+				shipMachine.setId(checkExistMachineValueBySerialSeq(fishingVesselId, results[1].toString()));
 				shipMachine.setSeq(((results[1] != null) ? Integer.parseInt(results[1].toString()) : null));
 				shipMachine.setUserName(((results[2] != null) ? results[2].toString() : null));
 				shipMachine.setLastupdate(((results[3] != null) ? Date.valueOf( (String) results[3]) : null));
@@ -667,6 +669,27 @@ public class FI2Repository {
 		} catch (Exception e) {
 			logger.info(e.getMessage());
 			e.printStackTrace();
+			return 0;
+		}
+	}
+	
+	/*Check value existing in ship_machine*/
+	private Integer checkExistMachineValueBySerialSeq(String shipSerialId, String seq) throws DataAccessException {
+		try {
+			Query queryStr = entityManagerOdoo
+					.createNativeQuery("select max(id) from ship_machine where ship_serial_id = :shipSerialId and seq = :seq")
+					.setParameter("shipSerialId", Integer.parseInt(shipSerialId))
+					.setParameter("seq", Integer.parseInt(seq));
+			List<?> resulList = queryStr.getResultList();
+			
+			if(!resulList.isEmpty()){
+				return Integer.parseInt(queryStr.getSingleResult().toString());
+			}else{
+				return 0;
+			}
+		} catch (Exception e) {
+			//logger.info(e.getMessage());
+			//e.printStackTrace();
 			return 0;
 		}
 	}

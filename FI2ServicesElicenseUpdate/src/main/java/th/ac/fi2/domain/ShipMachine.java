@@ -6,6 +6,8 @@ import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
@@ -14,15 +16,18 @@ import th.ac.fi2.domain.ShipMachinePKey;
 
 @Entity
 @Table(name="ship_machine")
-@IdClass(value=ShipMachinePKey.class)
+//@IdClass(value=ShipMachinePKey.class)
 public class ShipMachine implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
+	@Column(name="ID")
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private Integer id;
+	
 	@Column(name="SHIP_SERIAL_ID")
 	private Integer shipSerialId;
 	
-	@Id
 	@Column(name="SEQ")
 	private Integer seq;
 	
@@ -78,12 +83,19 @@ public class ShipMachine implements Serializable {
 	public ShipMachine(){
     	
     }
-
 	
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
 	public Integer getShipSerialId() {
 		return shipSerialId;
 	}
-
+	
 	public void setShipSerialId(Integer shipSerialId) {
 		this.shipSerialId = shipSerialId;
 	}

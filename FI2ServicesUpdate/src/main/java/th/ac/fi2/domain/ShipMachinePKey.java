@@ -2,15 +2,18 @@ package th.ac.fi2.domain;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+
 public class ShipMachinePKey implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-//	@Id
-//	@Column(name="SHIP_SERIAL_ID")
+	@Id
+	@Column(name="SHIP_SERIAL_ID")
 	private Integer shipSerialId;
 	
-//	@Id
-//	@Column(name="SEQ")
+	@Id
+	@Column(name="SEQ")
 	private Integer seq;
 	
 	
